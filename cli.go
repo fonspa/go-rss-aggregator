@@ -186,12 +186,31 @@ func handlerFollowing(s *state, cmd command, user database.User) error {
 		return err
 	}
 	if len(feeds) == 0 {
-		fmt.Printf("User %s does not follow any feed", user.Name)
+		fmt.Printf("User %s does not follow any feed\n", user.Name)
 		return nil
 	}
 	fmt.Printf("User %s is following:\n", user.Name)
 	for _, feed := range feeds {
 		fmt.Printf("* %s\n", feed.FeedName)
+	}
+	return nil
+}
+
+func handlerUnfollow(s *state, cmd command, user database.User) error {
+	if len(cmd.args) == 0 {
+		return errors.New("you must provide an RSS feed URL to unfollow")
+	}
+	feedURL := cmd.args[0]
+	feed, err := s.db.GetFeedByURL(context.Background(), feedURL)
+	if err != nil {
+		return fmt.Errorf("error getting feed by URL: %v", err)
+	}
+	err = s.db.DeleteFeedFollow(context.Background(), database.DeleteFeedFollowParams{
+		FeedID: feed.ID,
+		UserID: user.ID,
+	})
+	if err != nil {
+		return fmt.Errorf("error deleting feed follow: %v", err)
 	}
 	return nil
 }
