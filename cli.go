@@ -91,19 +91,6 @@ func handlerListUsers(s *state, cmd command) error {
 	return nil
 }
 
-func handlerAgg(s *state, cmd command) error {
-	if len(cmd.args) == 0 {
-		return errors.New("you must provide an URL")
-	}
-	feedUrl := cmd.args[0]
-	feed, err := fetchFeed(context.Background(), feedUrl)
-	if err != nil {
-		return err
-	}
-	fmt.Println(feed)
-	return nil
-}
-
 // Add a new feed and create a record in the feed_follows table
 func handlerAddFeed(s *state, cmd command, user database.User) error {
 	if len(cmd.args) < 2 {
