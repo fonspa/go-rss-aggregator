@@ -79,6 +79,12 @@ import _ "github.com/lib/pq"
 
 ## Install and use the `gator` CLI
 
+First, create a config file in `~/.gatorconfig.json`
+```json
+{"db_url":"postgres://username:passwd@localhost:5432/gator?sslmode=disable","current_user_name":"kahya"}
+```
+Replace the username and passwd with your database connection info.
+
 From the root of the repo:
 ```shell
 $ go install -ldflags="-s -w"

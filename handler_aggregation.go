@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"example.com/pafcorp/gator/internal/database"
+	"github.com/fonspa/go-rss-aggregator/internal/database"
 	"github.com/google/uuid"
 )
 
