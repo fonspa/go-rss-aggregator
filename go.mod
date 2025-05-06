@@ -1,4 +1,4 @@
-module example.com/pafcorp/gator
+module github.com/fonspa/go-rss-aggregator
 
 go 1.24.2
 

@@ -5,8 +5,8 @@ import (
 	"log"
 	"os"
 
-	"example.com/pafcorp/gator/internal/config"
-	"example.com/pafcorp/gator/internal/database"
+	"github.com/fonspa/go-rss-aggregator/internal/config"
+	"github.com/fonspa/go-rss-aggregator/internal/database"
 	_ "github.com/lib/pq"
 )
 
