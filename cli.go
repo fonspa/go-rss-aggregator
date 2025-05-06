@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strconv"
 	"time"
 
 	"example.com/pafcorp/gator/internal/database"
@@ -198,6 +199,37 @@ func handlerUnfollow(s *state, cmd command, user database.User) error {
 	})
 	if err != nil {
 		return fmt.Errorf("error deleting feed follow: %v", err)
+	}
+	return nil
+}
+
+func handlerBrowse(s *state, cmd command, user database.User) error {
+	postLimit := 2
+	if len(cmd.args) >= 1 {
+		if specifiedLimit, err := strconv.Atoi(cmd.args[0]); err == nil {
+			postLimit = specifiedLimit
+		} else {
+			return fmt.Errorf("unable to parse provided limit: %v", err)
+		}
+	}
+	posts, err := s.db.GetPostsForUser(context.Background(), database.GetPostsForUserParams{
+		UserID: user.ID,
+		Limit:  int32(postLimit),
+	})
+	if err != nil {
+		return fmt.Errorf("unable to get posts: %v", err)
+	}
+	if len(posts) == 0 {
+		fmt.Printf("Found no posts for current user: %s\n", user.Name)
+		return nil
+	}
+	fmt.Printf("Found %d posts:\n", len(posts))
+	for _, post := range posts {
+		fmt.Printf("  * Feed : %s\n", post.FeedName)
+		fmt.Printf("  * Title: %s\n", post.Title)
+		fmt.Printf("  * Url  : %s\n", post.Url)
+		fmt.Printf("  * Published: %s\n", post.PublishedAt.Time.Format(time.DateOnly))
+		fmt.Println("---------------------------------------------")
 	}
 	return nil
 }
