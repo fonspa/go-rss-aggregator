@@ -1,7 +1,7 @@
 # Gator
 
 Boot.dev RSS Aggregator project to train Go / SQL.
- 
+
 A CLI tool that allows users to:
 - Add RSS feeds from across the internet to be collected
 - Store the collected posts in a PostgreSQL database
@@ -38,7 +38,7 @@ postgres=# SELECT version();
 - Connection string: `postgres://postgres:postgres@localhost:5432/gator`
 
 
-## Migrations and Goose
+## Using Goose to set up SQL Migrations
 
 A migration is a set of changes to a database.
 
@@ -54,6 +54,8 @@ cd sql/schema
 goose postgres postgres://postgres:postgres@localhost:5432/gator up
 ```
 
+To execute the Down migrations, do the same things but specifying `down` instead of `up` in the goose call.
+
 ## SQLC
 
 - Create a `sqlc.yaml` file with the required configuration
@@ -63,7 +65,7 @@ goose postgres postgres://postgres:postgres@localhost:5432/gator up
 $ sqlc generate
 ```
 This generates all the Go methods we need to interact with the database from Go.
-Note that `sqlc` import `google/uuid` so we need to go get it:
+Note that `sqlc` imports `google/uuid`, so we need to `go get` it:
 ```shell
 $ go get github.com/google/uuid
 ```
@@ -74,3 +76,23 @@ We need to import the `pq` driver's package in `main.go`, not because we'll use 
 ```Go
 import _ "github.com/lib/pq"
 ```
+
+## Install and use the `gator` CLI
+
+From the root of the repo:
+```shell
+$ go install -ldflags="-s -w"
+```
+
+Then simply call as follows:
+```shell
+$ gator register toto
+```
+
+A few commands:
+- `gator register toto`: Register and log in a new user `toto`
+- `gator users`: List registered users
+- `gator agg <scrapping_interval>`: Launch a never-ending loop of feeds aggregation. The scrapping interval should be a `time.Duration` parsable value, e.g. `15s`, `1m`. Stop it with `Ctrl+C`.
+- `gator addfeed <url>`: Add a new feed by its URL.
+- `gator follow <url>`: Make the currently logged-in user follow the feed from the given URL. The feed must have been added before hand.
+- `gator browse`: Print the posts from the feeds a user follows.
